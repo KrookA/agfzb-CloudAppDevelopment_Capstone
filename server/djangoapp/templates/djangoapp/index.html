@@ -32,7 +32,20 @@
                         <a class="nav-link" href="{% url 'djangoapp:contact' %}">Contact Us</a>
                     </li>
                 </ul>
-            
+                {% if user.is_authenticated %}
+                <div class="d-flex ml-auto align-items-baseline">
+                    <p class="text-primary" style="margin:0; cursor:default">{{ user.username }}</p>
+                    <a class="btn btn-info ml-3" href="{% url 'djangoapp:logout' %}">Logout</a>
+                </div>
+                {% else %}
+                <form class="d-flex ml-auto" method="POST" action="{% url 'djangoapp:login' %}">
+                    <input type="text" name="username" placeholder="Username" class="ml-1 form-control"/>
+                    <input type="password" name="password" placeholder="Password" class="ml-1 form-control"/>
+                    {% csrf_token %}
+                    <input type="submit" name="login_btn" value="Login" class="btn btn-primary ml-1">
+                    <a class="btn btn-secondary text-nowrap ml-1" href="{% url 'djangoapp:signup' %}">Sign Up</a>
+                </form>
+                {% endif %}
         </nav>
     <!--Add a dealer table here -->
 

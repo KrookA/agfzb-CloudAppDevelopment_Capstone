@@ -1,11 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+    <head>
     <meta charset="UTF-8">
+    <title>Register</title>
     {% load static %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-</head>
-    <body>
+    </head>
+    <body style="height: 100vh">
     <!--Add a registration form here -->
+    <form class="h-100 d-flex justify-content-start align-items-center" action="{% url 'djangoapp:signup' %}" method="POST">
+        <div class="container card w-25 h-75 bg-light">
+            <h1 class="mt-4">Sign Up</h1>
+            <hr class="mt-4"/>
+            <label for="username" class="mt-5"><b>Username:</b></label>
+            <input type="text" name="username" placeholder="Username" class="form-control"/>
+            <label for="fname" class="mt-4"><b>First Name:</b></label>
+            <input type="text" name="fname" placeholder="First Name" class="form-control"/>
+            <label for="lname" class="mt-4"><b>Last Name:</b></label>
+            <input type="text" name="lname" placeholder="Last Name" class="form-control"/>
+            <label for="password" class="mt-4"><b>Password:</b></label>
+            <input type="password" name="password" placeholder="Password" class="form-control"/>
+            {% csrf_token %}
+            <input type="submit" name="signup_btn" value="Sign Up" class="btn btn-primary mt-5" />
+        </div>
+    </form>
     </body>
 </html>
