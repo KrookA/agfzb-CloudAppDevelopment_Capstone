@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-# from .restapis import related methods
+from .restapis import get_dealers_from_cloudant, get_dealer_reviews_from_cloudant
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -89,12 +89,22 @@ def signup_view(request):
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/index.html', context)
+        url = "https://a8903b5f.eu-gb.apigw.appdomain.cloud/api/dealership"
+        dealerships = get_dealers_from_cloudant(url, state="asd")
+        dealership_names = " ".join([dealer.short_name for dealer in dealerships])
+        return HttpResponse(dealership_names)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 # def get_dealer_details(request, dealer_id):
 # ...
+def get_dealer_details(request, dealerId):
+    context = {}
+    if request.method == "GET":
+        url = "https://a8903b5f.eu-gb.apigw.appdomain.cloud/api/review"
+        reviews = get_dealer_reviews_from_cloudant(url, dealerId=dealerId)
+        review_names = " ".join([review.name for review in reviews])
+        return HttpResponse(review_names)
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
