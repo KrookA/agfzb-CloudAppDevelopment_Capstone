@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 # from .models import related models
-from .restapis import get_dealers_from_cloudant, get_dealer_reviews_from_cloudant
+from .restapis import get_dealers_from_cloudant, get_dealer_reviews_from_cloudant, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
 from datetime import datetime
@@ -90,7 +90,7 @@ def get_dealerships(request):
     context = {}
     if request.method == "GET":
         url = "https://a8903b5f.eu-gb.apigw.appdomain.cloud/api/dealership"
-        dealerships = get_dealers_from_cloudant(url, state="asd")
+        dealerships = get_dealers_from_cloudant(url, state="CA")
         dealership_names = " ".join([dealer.short_name for dealer in dealerships])
         return HttpResponse(dealership_names)
 
@@ -103,10 +103,29 @@ def get_dealer_details(request, dealerId):
     if request.method == "GET":
         url = "https://a8903b5f.eu-gb.apigw.appdomain.cloud/api/review"
         reviews = get_dealer_reviews_from_cloudant(url, dealerId=dealerId)
-        review_names = " ".join([review.name for review in reviews])
+        review_names = " ".join([review.sentiment for review in reviews])
         return HttpResponse(review_names)
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
 # ...
+def add_review(request, dealerId):
+    context = {}
+    if request.method == "POST" and request.user.is_authenticated:
+        #probably temporary i would hope vvv
+        review = dict()
+        review["id"] = 33
+        review["name"] = "John Doe"
+        review["dealership"] = 3
+        review["review"] = "I cannot say how much I hated the service. Blow it all up."
+        review["purchase"] = True
+        review["purchase_date"] = datetime.utcnow().isoformat()
+        review["car_make"] = "Audi"
+        review["car_model"] = "A6"
+        review["car_year"] = 1999
 
+        json_payload = dict()
+        json_payload["review"] = review
+
+        res = post_request("https://a8903b5f.eu-gb.apigw.appdomain.cloud/api/review", json_payload, dealerId=dealerId)
+        return HttpResponse(res)
