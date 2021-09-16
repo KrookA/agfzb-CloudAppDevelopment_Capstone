@@ -68,8 +68,8 @@ def get_dealer_reviews_from_cloudant(url, dealerId):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
 def analyze_review_sentiments(text):
-    url = "https://api.eu-gb.natural-language-understanding.watson.cloud.ibm.com/instances/0bd8f66a-26e0-464e-b807-30711ef340d0/v1/analyze"
-    apikey = "v-Qz3IAENR61e5DOQKgqDSbvTYFjW51ihUMU5ep4u8Tj"
+    url = ""
+    apikey = ""
     text = text
     version = "2021-08-01"
     return_analyzed_text = True
