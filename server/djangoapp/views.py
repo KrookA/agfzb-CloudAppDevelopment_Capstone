@@ -90,9 +90,9 @@ def get_dealerships(request):
     context = {}
     if request.method == "GET":
         url = "https://a8903b5f.eu-gb.apigw.appdomain.cloud/api/dealership"
-        dealerships = get_dealers_from_cloudant(url, state="CA")
-        dealership_names = " ".join([dealer.short_name for dealer in dealerships])
-        return HttpResponse(dealership_names)
+        dealerships = get_dealers_from_cloudant(url, state="")
+        context["dealerships"] = dealerships
+        return render(request, "djangoapp/index.html", context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer

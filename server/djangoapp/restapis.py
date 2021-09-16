@@ -1,9 +1,11 @@
 import requests
 import json
+import os
+from dotenv import load_dotenv
 from .models import CarDealer, DealerReview
 from requests.auth import HTTPBasicAuth
 
-
+load_dotenv()
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
 #                                     auth=HTTPBasicAuth('apikey', api_key))
@@ -68,8 +70,8 @@ def get_dealer_reviews_from_cloudant(url, dealerId):
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
 def analyze_review_sentiments(text):
-    url = ""
-    apikey = ""
+    url = os.getenv("NLU_URL")
+    apikey = os.getenv("NLU_APIKEY")
     text = text
     version = "2021-08-01"
     return_analyzed_text = True
