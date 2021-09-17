@@ -39,6 +39,8 @@ def get_dealers_from_cloudant(url, **kwargs):
     results = []
     if "state" in kwargs:
         json_result = get_request(url, False, state=kwargs["state"])
+    elif "dealerId" in kwargs:
+        json_result = get_request(url, False, dealerId=kwargs["dealerId"])
     else:
         json_result = get_request(url, False)
 

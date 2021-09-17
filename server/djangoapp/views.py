@@ -101,10 +101,12 @@ def get_dealerships(request):
 def get_dealer_details(request, dealerId):
     context = {}
     if request.method == "GET":
-        url = "https://a8903b5f.eu-gb.apigw.appdomain.cloud/api/review"
-        reviews = get_dealer_reviews_from_cloudant(url, dealerId=dealerId)
-        review_names = " ".join([review.sentiment for review in reviews])
-        return HttpResponse(review_names)
+        url = "https://a8903b5f.eu-gb.apigw.appdomain.cloud/api/"
+        reviews = get_dealer_reviews_from_cloudant(url + "review", dealerId=dealerId)
+        context["reviews"] = reviews
+        dealer = get_dealers_from_cloudant(url + "dealership", dealerId=dealerId)
+        context["dealer"] = dealer[0]
+        return render(request, "djangoapp/dealer_details.html", context)
 
 # Create a `add_review` view to submit a review
 # def add_review(request, dealer_id):
@@ -129,3 +131,5 @@ def add_review(request, dealerId):
 
         res = post_request("https://a8903b5f.eu-gb.apigw.appdomain.cloud/api/review", json_payload, dealerId=dealerId)
         return HttpResponse(res)
+    if request.method == "GET":
+        return HttpResponse("Ayo its here")
