@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
-# from .models import related models
+from .models import CarModel
 from .restapis import get_dealers_from_cloudant, get_dealer_reviews_from_cloudant, post_request
 from django.contrib.auth import login, logout, authenticate
 from django.contrib import messages
@@ -114,22 +114,32 @@ def get_dealer_details(request, dealerId):
 def add_review(request, dealerId):
     context = {}
     if request.method == "POST" and request.user.is_authenticated:
-        #probably temporary i would hope vvv
-        review = dict()
-        review["id"] = 33
-        review["name"] = "John Doe"
-        review["dealership"] = 3
-        review["review"] = "I cannot say how much I hated the service. Blow it all up."
-        review["purchase"] = True
-        review["purchase_date"] = datetime.utcnow().isoformat()
-        review["car_make"] = "Audi"
-        review["car_model"] = "A6"
-        review["car_year"] = 1999
-
+        review_obj = dict()
+        review_obj["review"] = request.POST["review"]
+        car_model_obj = CarModel.objects.filter(id=request.POST["car"])
+        review_obj["car_make"] = car_model_obj[0].name
+        review_obj["car_model"] = car_model_obj[0].model_type
+        review_obj["car_year"] = car_model_obj[0].year.strftime("%Y")
+        review_obj["purchase_date"] = request.POST["date"]
+        review_obj["name"] = request.user.username
+        review_obj["dealership"] = dealerId
+        if review_obj["purchase_date"]:
+            review_obj["purchase"] = True
+        else:
+            review_obj["purchase"] = False
+            del review_obj["car_make"]
+            del review_obj["car_model"]
+            del review_obj["car_year"]
+            del review_obj["purchase_date"]
+        review_obj["id"] = 33 #cant see where to auto generate this or even why its required
+        print(review_obj)
         json_payload = dict()
-        json_payload["review"] = review
+        json_payload["review"] = review_obj
 
         res = post_request("https://a8903b5f.eu-gb.apigw.appdomain.cloud/api/review", json_payload, dealerId=dealerId)
         return HttpResponse(res)
-    if request.method == "GET":
-        return HttpResponse("Ayo its here")
+    if request.method == "GET" and request.user.is_authenticated:
+        cars = CarModel.objects.filter(dealerId=dealerId)
+        context["cars"] = cars
+        context["dealerId"] = dealerId
+        return render(request, "djangoapp/add_review.html", context)

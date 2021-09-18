@@ -2,15 +2,58 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <title>Create Review</title>
     {% load static %}
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/css/bootstrap-datepicker.css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.5.0/js/bootstrap-datepicker.js"></script>
 
 </head>
-    <body>
+    <body style="height: 100vh">
     <!--Add review form here -->
+        <form class="h-100 d-flex justify-content-start align-items-center" action="{% url 'djangoapp:add_review' dealerId %}" method="POST">
+            <div class="container card w-25 h-75 bg-light" style="">
+                <h1 class="mt-4">Add a review:</h1>
+                <hr />
+                <label for="review" class="mt-3"><b>Review:</b></label>
+                <textarea class="form-control" id="review" name="review" rows="5"  style="resize: none"></textarea>
+                <div class="form-check">
+                    <input class="form-select mt-3" type="checkbox" name="purchasedbox" id="purchasedbox" />
+                    <label for="purchasedbox" class="form-check-label" style="-webkit-user-select: none; -moz-user-select: none;">Did you buy a car?</label>
+                </div>
+                <div id="purchased_content">
+                    <hr />
+                    <label for="car" class="mt-2"><b>The car you purchased:</b></label>
+                    <select name="car" id="car" class="form-select" id="car">
+                        {% for car in cars %}
+                            <option value={{car.id}}>{{car.name}}-{{car.make.name}}-{{car.year|date:"Y"}}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="date" class="mt-3"><b>Purchase date:</b></label>
+                    <input type="text" class="date-own form-control" name="date" id="date"/>
+                </div>
+                <hr />
+                {% csrf_token %}
+                <input type="submit" name="submit" value="Submit Review" class="btn btn-primary mt-2" />
+            </div>
+        </form>
+        <script type="text/javascript">
+            $('#date').datepicker({
+                format: 'mm/dd/yyyy'
+             });
+             $("#purchasedbox").change(function() {
+                 if (this.checked) {
+                    $("#purchased_content").show()
+                 }
+                 else {
+                     $("#car").val("")
+                     $("#date").val("")
+                     $("#purchased_content").hide()
+                 }
+             })
+             $("#purchased_content").hide()
+ </script>
     </body>
 </html>

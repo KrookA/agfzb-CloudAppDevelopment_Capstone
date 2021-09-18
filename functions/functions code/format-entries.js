@@ -12,7 +12,29 @@ function main(params) {
         return params.params;
     }
 
-    if (params.params["state"]) {
+    if (params.params["dealerId"]) {
+        //dealer id spefified
+        let out = []
+        params.docs.forEach(function(e) {
+            if (e.id == params.params["dealerId"]) { //include state
+                out.push({
+                    id: e.id,
+                    city: e.city,
+                    state: e.state,
+                    st: e.st,
+                    address: e.address,
+                    zip: e.zip,
+                    lat: e.lat,
+                    long: e.long,
+                    short_name: e.short_name,
+                    full_name: e.full_name
+                })
+                return;
+            }
+        })
+        return {entries: out};
+    }
+    else if (params.params["state"]) {
         //state specified
         let out = [];
         params.docs.forEach(function(e) {

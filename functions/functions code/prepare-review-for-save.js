@@ -9,7 +9,7 @@
   */
 function main(params) {
 	let review = params.review;
-	if (!(review.id && review.name && review.dealership && review.review && review.purchase && review.purchase_date && review.car_make && review.car_model && review.car_year)) {
+	if (!(review.id && review.name && review.dealership && review.review && typeof(review.purchase) == "boolean")) {
 	    //not all fields provided
 	    return Promise.reject({error: "Not all required fields submitted to POST"});
 	}
