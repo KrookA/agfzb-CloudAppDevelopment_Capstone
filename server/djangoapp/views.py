@@ -137,9 +137,11 @@ def add_review(request, dealerId):
         json_payload["review"] = review_obj
 
         res = post_request("https://a8903b5f.eu-gb.apigw.appdomain.cloud/api/review", json_payload, dealerId=dealerId)
-        return HttpResponse(res)
-    if request.method == "GET" and request.user.is_authenticated:
+        return redirect("djangoapp:dealer_details", dealerId=dealerId)
+    elif request.method == "GET" and request.user.is_authenticated:
         cars = CarModel.objects.filter(dealerId=dealerId)
         context["cars"] = cars
         context["dealerId"] = dealerId
         return render(request, "djangoapp/add_review.html", context)
+    else:
+        return redirect("djangoapp:index")
